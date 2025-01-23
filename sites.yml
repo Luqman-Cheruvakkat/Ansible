@@ -1,0 +1,26 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: install apache2 and update repository package
+    apt:
+      name: apache2
+      state: latest
+      update_cache: yes
+    when: ansible_distribution == 'Ubuntu'
+  
+  - name: copy the apache configuration file
+    copy:
+      src: ./files/app.com.conf
+      dest: /etc/apache2/sites-enabled/app.com.conf
+      owner: root
+      group: root
+      mode: '0644'
+
+  - name: restat the apache service
+    service:
+      name: apache2
+      state: restarted
+
