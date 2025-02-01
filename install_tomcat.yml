@@ -10,6 +10,19 @@
       state: latest
     when: ansible_distribution == 'Ubuntu'
 
+  - name: Create a tomcat group
+    group:
+      name: tomcat
+      state: present
+
+  - name: Create a tomcat user
+    user:
+      name: tomcat
+      group: tomcat
+      home: /opt/tomcat
+      shell: /bin/false
+      system: yes
+
 
   - name: Download tomcat and configure
     get_url:
@@ -19,8 +32,82 @@
   - name: Extract tomcat
     unarchive:
       src: /tmp/apache-tomcat-9.0.98.tar.gz
-      dest: /opt/
+      dest: /opt/tomcat
       remote_src: yes
+    
+  - name: Rename the tomcat
+    shell: | 
+      cd /opt/tomcat/apache-tomcat-9.0.98 && 
+      mv * ../ &&
+      rm -rf /opt/tomcat/apache-tomcat-9.0.98
+  
+
+  - name: Set permissions for Tomcat
+    file:
+      path: /opt/tomcat
+      state: directory
+      owner: tomcat
+      group: tomcat
+      recurse: yes
+
+  - name: Ensure Tomcat bin directory scripts are executable
+    file:
+      path: /opt/tomcat/bin
+      state: directory
+      mode: '0755'
+      recurse: yes
+
+  - name: Ensure JAVA Heap is set in catalina.sh
+    lineinfile:
+      path: /opt/tomcat/bin/catalina.sh
+      line: 'export CATALINA_OPTS="-Xms32M -Xmx512M -XX:PermSize=32m -XX:MaxPermSize=512m" "'
+      state: present
+
+  - name: Get and set JAVA_HOME
+    shell: "update-alternatives --query java | awk '/Value: / {print $2}' | sed 's:/bin/java::'"
+    register: java_home_result
+    changed_when: false
+    
+  - name: Display JAVA_HOME
+    debug:
+      msg: "JAVA_HOME is set to {{ java_home_result.stdout }}"
+
+  - name: Configuring Tomcat system service
+    copy:
+      src: ./files/tomcat.service
+      dest: /etc/systemd/system/tomcat.service
+      owner: root
+      group: root
+      mode: '0644'
+
+  - name: Set JAVA HOME in tomcat service file
+    lineinfile:
+      path: /etc/systemd/system/tomcat.service
+      regexp: '^Environment=JAVA_HOME=.*$'
+      line: 'Environment=JAVA_HOME={{ java_home_result.stdout }}'
+      state: present
+    notify: Restart Tomcat
+
+  - name: Reload systemd to apply changes
+    systemd:
+      daemon_reload: yes
+    when: ansible_distribution == 'Ubuntu'
+
+  handlers:
+  - name: Restart Tomcat
+    service:
+      name: tomcat
+      state: restarted
+
+     
+   
+ 
+ 
+   
+   
+    
+
+  
     
   
   
