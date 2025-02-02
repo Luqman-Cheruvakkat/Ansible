@@ -20,7 +20,7 @@ ExecStop=/opt/tomcat/bin/shutdown.sh
 #User=root
 #Group=root
 UMask=0007
-RestartSec=10
+#RestartSec=10
 #Restart=yes
 
 [Install]

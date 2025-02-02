@@ -23,7 +23,6 @@
       shell: /bin/false
       system: yes
 
-
   - name: Download tomcat and configure
     get_url:
       url: https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.98/bin/apache-tomcat-9.0.98.tar.gz
@@ -34,13 +33,8 @@
       src: /tmp/apache-tomcat-9.0.98.tar.gz
       dest: /opt/tomcat
       remote_src: yes
-    
-  - name: Rename the tomcat
-    shell: | 
-      cd /opt/tomcat/apache-tomcat-9.0.98 && 
-      mv * ../ &&
-      rm -rf /opt/tomcat/apache-tomcat-9.0.98
-  
+      extra_opts: ['--strip-components=1']
+      creates: /opt/tomcat/bin
 
   - name: Set permissions for Tomcat
     file:
@@ -60,7 +54,8 @@
   - name: Ensure JAVA Heap is set in catalina.sh
     lineinfile:
       path: /opt/tomcat/bin/catalina.sh
-      line: 'export CATALINA_OPTS="-Xms32M -Xmx512M -XX:PermSize=32m -XX:MaxPermSize=512m" "'
+      line: 'export CATALINA_OPTS="-Xms32M -Xmx512M -XX:MetaspaceSize=32m -XX:MaxMetaspaceSize=512m"'
+      insertbefore: '# Check for the deprecated LOGGING_CONFIG'
       state: present
 
   - name: Get and set JAVA_HOME
