@@ -1,0 +1,96 @@
+- name: Install and configure MySQL 8.0.35 from a bundle tar file with custom data directory
+  hosts: all
+  become: true
+  tasks:
+    - name: Ensure required dependencies are installed
+      apt:
+        name:
+          - libaio1
+          - libncurses5
+          - libnuma1
+          - libmecab2
+        state: present
+        update_cache: yes
+
+    - name: Download MySQL bundle tar file
+      get_url:
+        url: https://cdn.mysql.com/archives/mysql-8.0/mysql-server_8.0.35-1ubuntu22.04_amd64.deb-bundle.tar
+        dest: /tmp/mysql-server_8.0.35-1ubuntu22.04_amd64.deb-bundle.tar
+
+    - name: Create installation directory
+      file:
+        path: /usr/local/mysql
+        state: directory
+
+    - name: Extract MySQL deb-bundle tar file
+      unarchive:
+        src: /tmp/mysql-server_8.0.35-1ubuntu22.04_amd64.deb-bundle.tar
+        dest: /usr/local/mysql
+        remote_src: yes
+
+
+    - name: Install all MySQL deb packages
+      shell: |
+        cd /usr/local/mysql
+        DEBIAN_FRONTEND=noninteractive dpkg -i *.deb || apt-get -f install -y
+      args:
+        chdir: /usr/local/mysql
+
+    - name: Enable MySQL service
+      systemd:
+        name: mysql
+        enabled: true
+
+    - name: Start MySQL service
+      systemd:
+        name: mysql
+        state: started
+
+    - name: Stop MySQL service to update configuration
+      systemd:
+        name: mysql
+        state: stopped
+
+    - name: Remove old MySQL data directory
+      file:
+        path: /var/lib/mysql
+        state: absent
+
+    - name: Create new MySQL data directory
+      file:
+        path: /var/lib/mysql
+        state: directory
+        owner: mysql
+        group: mysql
+        mode: '0700'
+
+    - name: Update MySQL configuration
+      lineinfile:
+        path: /etc/mysql/mysql.conf.d/mysqld.cnf
+        state: present
+        regexp: '^bind-address|^mysqlx-bind-address|^lower_case_table_names'
+        line: "{{ item }}"
+      loop:
+        - "bind-address = 127.0.0.1"
+        - "mysqlx-bind-address = 127.0.0.1"
+        - "lower_case_table_names = 1"
+
+    - name: Initialize MySQL data directory
+      shell: |
+        mysqld --defaults-file=/etc/mysql/my.cnf --initialize --lower_case_table_names=1 --user=mysql --console
+
+    - name: Start MySQL service after configuration changes
+      systemd:
+        name: mysql
+        state: started
+
+    - name: Check MySQL service status
+      command: systemctl status mysql
+      register: mysql_status
+      ignore_errors: true
+
+    - name: Print MySQL status
+      debug:
+        msg: "{{ mysql_status.stdout }}"
+
+

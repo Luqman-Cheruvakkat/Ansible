@@ -1,0 +1,30 @@
+---
+- name: Install and Configure Logstash 7.17.9 on Ubuntu 22.04
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Add Elastic GPG key for Logstash
+      apt_key:
+        url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+        state: present
+
+    - name: Add Elastic repository for Logstash
+      apt_repository:
+        repo: "deb https://artifacts.elastic.co/packages/7.x/apt stable main"
+        state: present
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Logstash 7.17.9
+      apt:
+        name: logstash=1:7.17.9-1
+        state: present
+
+    - name: Ensure Logstash service is disabled and stopped
+      systemd:
+        name: logstash
+        enabled: no
+        state: stopped

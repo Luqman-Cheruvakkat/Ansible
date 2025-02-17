@@ -11,3 +11,9 @@
       update_cache: yes
     when: ansible_distribution == 'Ubuntu'
 
+  - name: Ensure the apache is enabled and started
+    systemd:
+      name: apache2
+      enabled: yes
+      state: restarted
+

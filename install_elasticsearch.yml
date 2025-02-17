@@ -1,8 +1,74 @@
 ---
-
-- hosts: all
+- name: Install and Configure Elasticsearch 8.7.0 on Ubuntu 22.04
+  hosts: all
   become: true
+
   tasks:
+    - name: Add Elasticsearch GPG key
+      apt_key:
+        url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+        state: present
 
-  - name
+    - name: Add Elasticsearch repository
+      apt_repository:
+        repo: "deb https://artifacts.elastic.co/packages/8.x/apt stable main"
+        state: present
 
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Elasticsearch 8.7.0
+      apt:
+        name: elasticsearch=8.7.0
+        state: present
+
+    - name: Configure Elasticsearch network settings
+      blockinfile:
+        path: /etc/elasticsearch/elasticsearch.yml
+        marker: "# {mark} ANSIBLE MANAGED BLOCK"
+        block: |
+          network.host: 0.0.0.0
+          http.cors.enabled: true
+          http.cors.allow-origin: "*"
+          http.cors.allow-methods: OPTIONS, HEAD, GET, POST, PUT, DELETE
+          http.cors.allow-headers: X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization
+          http.cors.allow-credentials: true
+          http.port: 9200
+
+    - name: Set xpack.security.enabled to false
+      lineinfile:
+        path: /etc/elasticsearch/elasticsearch.yml
+        regexp: '^xpack.security.enabled:'
+        line: 'xpack.security.enabled: false'
+        state: present
+
+    - name: Configure Elasticsearch JVM heap size
+      lineinfile:
+        path: /etc/elasticsearch/jvm.options
+        regexp: '^-Xms'
+        line: "-Xms512m"
+        state: present
+
+    - name: Configure Elasticsearch JVM max heap size
+      lineinfile:
+        path: /etc/elasticsearch/jvm.options
+        regexp: '^-Xmx'
+        line: "-Xmx512m"
+        state: present
+
+    - name: Ensure Elasticsearch service is enabled and restarted
+      systemd:
+        name: elasticsearch
+        enabled: yes
+        state: restarted
+
+    - name: Verify Elasticsearch is running
+      uri:
+        url: "http://localhost:9200"
+        return_content: yes
+      register: es_status
+
+    - name: Debug Elasticsearch status
+      debug:
+        msg: "{{ es_status.content }}"
