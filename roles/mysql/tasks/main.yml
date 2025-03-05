@@ -1,0 +1,81 @@
+---
+- name: Ensure required dependencies are installed
+  apt:
+    name: "{{ mysql_dependencies }}"
+    state: present
+    update_cache: yes
+
+- name: Download MySQL bundle tar file
+  get_url:
+    url: "{{ mysql_download_url }}"
+    dest: /tmp/mysql-server_{{ mysql_version }}.tar
+
+- name: Create installation directory
+  file:
+    path: "{{ mysql_install_dir }}"
+    state: directory
+
+- name: Extract MySQL deb-bundle tar file
+  unarchive:
+    src: /tmp/mysql-server_{{ mysql_version }}.tar
+    dest: "{{ mysql_install_dir }}"
+    remote_src: yes
+
+- name: Install all MySQL deb packages
+  shell: |
+    cd {{ mysql_install_dir }}
+    DEBIAN_FRONTEND=noninteractive dpkg -i *.deb || apt-get -f install -y
+  args:
+    chdir: "{{ mysql_install_dir }}"
+
+- name: Enable MySQL service
+  systemd:
+    name: mysql
+    enabled: true
+
+- name: Start MySQL service
+  systemd:
+    name: mysql
+    state: started
+
+- name: Stop MySQL service to update configuration
+  systemd:
+    name: mysql
+    state: stopped
+
+- name: Remove old MySQL data directory
+  file:
+    path: /var/lib/mysql
+    state: absent
+
+- name: Create new MySQL data directory
+  file:
+    path: "{{ mysql_data_dir }}"
+    state: directory
+    owner: mysql
+    group: mysql
+    mode: '0700'
+
+- name: Update MySQL configuration
+  template:
+    src: mysqld.cnf.j2
+    dest: /etc/mysql/mysql.conf.d/mysqld.cnf
+
+- name: Initialize MySQL data directory
+  shell: |
+    mysqld --defaults-file=/etc/mysql/my.cnf --initialize --lower_case_table_names=1 --user=mysql --console
+
+- name: Start MySQL service after configuration changes
+  systemd:
+    name: mysql
+    state: started
+
+- name: Check MySQL service status
+  command: systemctl status mysql
+  register: mysql_status
+  ignore_errors: true
+
+- name: Print MySQL status
+  debug:
+    msg: "{{ mysql_status.stdout }}"
+

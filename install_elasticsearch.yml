@@ -47,14 +47,14 @@
       lineinfile:
         path: /etc/elasticsearch/jvm.options
         regexp: '^-Xms'
-        line: "-Xms512m"
+        line: "-Xms2048m"
         state: present
 
     - name: Configure Elasticsearch JVM max heap size
       lineinfile:
         path: /etc/elasticsearch/jvm.options
         regexp: '^-Xmx'
-        line: "-Xmx512m"
+        line: "-Xmx2048m"
         state: present
 
     - name: Ensure Elasticsearch service is enabled and restarted

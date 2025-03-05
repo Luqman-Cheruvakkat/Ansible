@@ -1,0 +1,5 @@
+---
+domain_name: example.com
+ssl_cert_path: /etc/apache2/ssl/example.crt
+ssl_key_path: /etc/apache2/ssl/example.key
+

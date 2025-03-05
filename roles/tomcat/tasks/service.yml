@@ -1,0 +1,21 @@
+---
+- name: Configure Tomcat system service
+  template:
+    src: tomcat.service.j2
+    dest: /etc/systemd/system/tomcat.service
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Set JAVA_HOME in Tomcat service file
+  lineinfile:
+    path: /etc/systemd/system/tomcat.service
+    regexp: '^Environment=JAVA_HOME=.*$'
+    line: 'Environment=JAVA_HOME={{ java_home_result.stdout }}'
+    state: present
+  notify: Restart Tomcat
+
+- name: Reload systemd to apply changes
+  systemd:
+    daemon_reload: yes
+

@@ -1,0 +1,11 @@
+# site.yml
+- name: Deploy Fibi Infra
+  hosts: all
+  become: yes
+  roles:
+    - elasticsearch
+    - apache
+    - logstash
+    - mysql
+    - tomcat
+

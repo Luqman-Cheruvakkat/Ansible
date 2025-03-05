@@ -25,12 +25,12 @@
 
   - name: Download tomcat and configure
     get_url:
-      url: https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.98/bin/apache-tomcat-9.0.98.tar.gz
-      dest: /tmp/apache-tomcat-9.0.98.tar.gz
+      url: https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.43/bin/apache-tomcat-9.0.43.tar.gz
+      dest: /tmp/apache-tomcat-9.0.43.tar.gz
   
   - name: Extract tomcat
     unarchive:
-      src: /tmp/apache-tomcat-9.0.98.tar.gz
+      src: /tmp/apache-tomcat-9.0.43.tar.gz
       dest: /opt/tomcat
       remote_src: yes
       extra_opts: ['--strip-components=1']
@@ -54,7 +54,7 @@
   - name: Ensure JAVA Heap is set in catalina.sh
     lineinfile:
       path: /opt/tomcat/bin/catalina.sh
-      line: 'export CATALINA_OPTS="-Xms32M -Xmx512M -XX:MetaspaceSize=32m -XX:MaxMetaspaceSize=512m"'
+      line: 'export CATALINA_OPTS="-Xms32M -Xmx6144M -XX:MetaspaceSize=32m -XX:MaxMetaspaceSize=512m"'
       insertbefore: '# Check for the deprecated LOGGING_CONFIG'
       state: present
 
