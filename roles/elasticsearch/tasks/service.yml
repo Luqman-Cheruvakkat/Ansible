@@ -1,0 +1,17 @@
+---
+- name: Ensure Elasticsearch service is enabled and restarted
+  systemd:
+    name: elasticsearch
+    enabled: yes
+    state: restarted
+
+- name: Verify Elasticsearch is running
+  uri:
+    url: "http://localhost:9200"
+    return_content: yes
+  register: es_status
+
+- name: Debug Elasticsearch status
+  debug:
+    msg: "{{ es_status.content }}"
+

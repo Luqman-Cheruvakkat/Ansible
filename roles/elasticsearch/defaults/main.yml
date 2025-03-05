@@ -1,0 +1,5 @@
+---
+elastic_version: "8.7.0"
+es_heap_size: "2048m"
+xpack_security_enabled: false
+
