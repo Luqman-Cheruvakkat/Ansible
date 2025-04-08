@@ -1,0 +1,80 @@
+---
+services:
+  - name: fibi-auth-service
+    port: 9902
+    jar_path: /opt/microservices/fibi-auth-service.jar
+    after: config-service.service
+    requires: config-service.service
+    environment:
+      - key: DB_HOST
+        value: "{{ db_host }}"
+      - key: DB_PORT
+        value: "{{ db_port }}"
+      - key: DB_USER
+        value: "{{ db_user }}"
+      - key: DB_PWD
+        value: "{{ db_pwd }}"
+      - key: DB_NAME
+        value: "{{ db_name }}"
+      - key: CONFIG_SERVER_URL
+        value: "{{ config_server_url }}"
+      - key: EUREKA_SERVER_ADDRESS
+        value: "{{ eureka_server_address }}"
+
+  - name: fibi-registry
+    port: 8763
+    jar_path: /opt/microservices/fibi-service-registry.jar
+    environment: []
+
+  - name: fibi-api
+    port: 8080
+    jar_path: /opt/microservices/fibi-api.jar
+    environment:
+      - key: CONFIG_SERVER_URL
+        value: "{{ config_server_url }}"
+      - key: EUREKA_SERVER_ADDRESS
+        value: "{{ eureka_server_address }}"
+
+  - name: fibi-config
+    port: 9302
+    jar_path: /opt/microservices/fibi-config.jar
+    environment: []
+
+  - name: fibi-service-tracker
+    port: 9904
+    jar_path: /opt/microservices/fibi-service-tracker.jar
+    environment:
+      - key: DB_HOST
+        value: "{{ db_host }}"
+      - key: DB_PORT
+        value: "{{ db_port }}"
+      - key: DB_USER
+        value: "{{ db_user }}"
+      - key: DB_PWD
+        value: "{{ db_pwd }}"
+      - key: DB_NAME
+        value: "{{ db_name }}"
+      - key: CONFIG_SERVER_URL
+        value: "{{ config_server_url }}"
+      - key: EUREKA_SERVER_ADDRESS
+        value: "{{ eureka_server_address }}"
+
+  - name: fibi-consumer
+    port: 9905
+    jar_path: /opt/microservices/fibi-consumer.jar
+    environment:
+      - key: DB_HOST
+        value: "{{ db_host }}"
+      - key: DB_PORT
+        value: "{{ db_port }}"
+      - key: DB_USER
+        value: "{{ db_user }}"
+      - key: DB_PWD
+        value: "{{ db_pwd }}"
+      - key: DB_NAME
+        value: "{{ db_name }}"
+      - key: CONFIG_SERVER_URL
+        value: "{{ config_server_url }}"
+      - key: EUREKA_SERVER_ADDRESS
+        value: "{{ eureka_server_address }}"
+

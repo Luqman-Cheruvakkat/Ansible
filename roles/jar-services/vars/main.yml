@@ -1,0 +1,9 @@
+---
+db_host: 192.168.1.225
+db_port: 3306
+db_user: fibdev
+db_pwd: P56
+db_name: bits_501
+config_server_url: http://127.0.0.1:9298
+eureka_server_address: http://127.0.0.1:8763/eureka
+

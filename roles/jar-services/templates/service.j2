@@ -1,0 +1,16 @@
+[Unit]
+Description={{ item.name }} Daemon
+{% if item.after %}After={{ item.after }}{% endif %}
+{% if item.requires %}Requires={{ item.requires }}{% endif %}
+
+[Service]
+ExecStart=/bin/java -jar {{ item.jar_path }} --server.port={{ item.port }}
+User=root
+Restart=always
+{% for env_var in item.environment %}
+Environment="{{ env_var.key }}={{ env_var.value }}"
+{% endfor %}
+
+[Install]
+WantedBy=multi-user.target
+
