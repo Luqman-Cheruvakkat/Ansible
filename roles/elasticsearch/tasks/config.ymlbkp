@@ -1,0 +1,13 @@
+---
+- name: Configure Elasticsearch network settings
+  template:
+    src: elasticsearch.yml.j2
+    dest: /etc/elasticsearch/elasticsearch.yml
+  notify: Restart Elasticsearch
+
+- name: Configure Elasticsearch JVM heap size
+  template:
+    src: jvm.options.j2
+    dest: /etc/elasticsearch/jvm.options
+  notify: Restart Elasticsearch
+
