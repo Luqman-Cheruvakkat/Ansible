@@ -1,0 +1,26 @@
+---
+
+
+- name: Load services_to_deploy from file
+  include_vars:
+    file: services_to_deploy.yml
+
+- name: Recursively change owner and group of /opt/tomcat to tomcat:tomcat
+  ansible.builtin.file:
+    path: /opt/tomcat
+    owner: tomcat
+    group: tomcat
+    recurse: yes
+  become: true
+
+- name: Start and enable services in order
+  systemd:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  become: true
+  loop: "{{ services_to_deploy }}"
+  loop_control:
+    loop_var: item
+  when: item is string
+

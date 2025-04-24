@@ -1,0 +1,5 @@
+#!/bin/bash
+{% for key, value in env_variables.items() %}
+export {{ key }}="{{ value | default('') }}"
+{% endfor %}
+

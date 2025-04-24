@@ -1,0 +1,42 @@
+---
+- name: Configure Elasticsearch network settings
+  blockinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+    block: |
+      network.host: 0.0.0.0
+      http.cors.enabled: true
+      http.cors.allow-origin: "*"
+      http.cors.allow-methods: OPTIONS, HEAD, GET, POST, PUT, DELETE
+      http.cors.allow-headers: X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization
+      http.cors.allow-credentials: true
+      http.port: 9200
+
+- name: Set xpack.security.http.ssl.enabled to false
+  lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml  # Adjust this path based on your setup
+    regexp: '^xpack\.security\.http\.ssl\.enabled:'
+    line: 'xpack.security.http.ssl.enabled: false'
+    state: present
+
+- name: Set xpack.security.enabled to false
+  lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    regexp: '^xpack.security.enabled:'
+    line: 'xpack.security.enabled: false'
+    state: present
+
+- name: Configure Elasticsearch JVM heap size
+  lineinfile:
+    path: /etc/elasticsearch/jvm.options
+    regexp: '^-Xms'
+    line: "-Xms{{ es_heap_size }}"
+    state: present
+
+- name: Configure Elasticsearch JVM max heap size
+  lineinfile:
+    path: /etc/elasticsearch/jvm.options
+    regexp: '^-Xmx'
+    line: "-Xmx{{ es_heap_size }}"
+    state: present
+

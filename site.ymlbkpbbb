@@ -3,10 +3,7 @@
   hosts: all
   become: yes
   roles:
-    - elasticsearch
-    - apache
-    - logstash
-    - mysql
     - tomcat
     - jar-services
+    - deployment
 

@@ -1,0 +1,9 @@
+env_variables:
+  EUREKA_SERVER_ADDRESS: "http://127.0.0.1:8763/eureka"
+  CONFIG_SERVER_URL: "http://127.0.0.1:9302"
+  DB_HOST: "127.0.0.1"
+  DB_PORT: "3306"
+  DB_USER: "fibiuser"
+  DB_NAME: "fibi"
+  DB_PWD: "Polus@123"
+

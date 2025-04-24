@@ -1,0 +1,20 @@
+---
+- name: Ensure git is installed
+  package:
+    name: git
+    state: present
+
+- name: Checkout Git repo
+  git:
+    repo: "{{ git_repo }}"
+    dest: "{{ git_dest }}"
+    version: "{{ git_branch }}"
+    force: yes
+
+- name: Run SQL script(s) on database
+  shell: |
+    cd {{ git_dest }}
+    mysql -h {{ mysql_host }} -P {{ mysql_port }} -u {{ mysql_user }} -p'{{ mysql_password }}' {{ mysql_database }} < "{{ sql_script }}"
+  args:
+    executable: /bin/bash
+

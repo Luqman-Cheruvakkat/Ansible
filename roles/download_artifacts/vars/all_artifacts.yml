@@ -4,7 +4,8 @@ all_artifacts:
   - { name: "fibi-service-request", path: "backend/fibi40", extension: "jar" }
   - { name: "fibi-base", path: "backend/fibi40", extension: "war" }
   - { name: "fibi-config-server", path: "backend/fibi40", extension: "jar" }
-  - { name: "fibifrontend", path: "frontend/fibifrontend", extension: "zip" }
+  - { name: "fibi", path: "frontend/fibifrontend", extension: "zip" }
   - { name: "fibi-service-registry", path: "backend/fibi40", extension: "jar" }
+  - { name: "fibi-agreement", path: "backend/fibi40", extension: "jar" }
   # ... add everything here
 

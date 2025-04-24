@@ -1,11 +1,21 @@
 ---
 services:
-  - name: fibi-auth
+  - name: fibi-auth-service
     port: 9902
     jar_path: /opt/microservices/fibi-auth-service.jar
     after: fibi-config.service
     requires: fibi-config.service
     environment:
+      - key: DB_HOST
+        value: "{{ db_host }}"
+      - key: DB_PORT
+        value: "{{ db_port }}"
+      - key: DB_USER
+        value: "{{ db_user }}"
+      - key: DB_PWD
+        value: "{{ db_pwd }}"
+      - key: DB_NAME
+        value: "{{ db_name }}"
       - key: CONFIG_SERVER_URL
         value: "{{ config_server_url }}"
       - key: EUREKA_SERVER_ADDRESS
@@ -18,7 +28,7 @@ services:
 
   - name: fibi-api
     port: 9905
-    jar_path: /opt/microservices/fibi-api-gateway.jar
+    jar_path: /opt/microservices/fibi-api.jar
     after: fibi-auth.service
     requires: fibi-auth.service
     environment:
@@ -29,16 +39,14 @@ services:
 
   - name: fibi-config
     port: 9302
-    jar_path: /opt/microservices/fibi-config-server.jar $CONFIG_PATH
+    jar_path: /opt/microservices/fibi-config.jar
     after: fibi-registry.service
     requires: fibi-registry.service
-    environment: 
-      - key: CONFIG_PATH
-        value: "{{ config_path }}"
+    environment: []
 
   - name: fibi-service-tracker
     port: 9904
-    jar_path: /opt/microservices/fibi-service-request.jar
+    jar_path: /opt/microservices/fibi-service-tracker.jar
     after: fibi-api.service
     requires: fibi-api.service
     environment:
@@ -77,7 +85,6 @@ services:
         value: "{{ config_server_url }}"
       - key: EUREKA_SERVER_ADDRESS
         value: "{{ eureka_server_address }}"
-
   - name: fibi-agreement
     port: 9907
     jar_path: /opt/microservices/fibi-agreement.jar

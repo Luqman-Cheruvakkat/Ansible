@@ -1,6 +1,7 @@
 [Unit]
 Description=Apache Tomcat
-After=network.target
+After=fibi-api.service
+Requires=fibi-api.service
 
 [Service]
 Type=forking

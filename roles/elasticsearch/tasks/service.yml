@@ -5,10 +5,47 @@
     enabled: yes
     state: restarted
 
-- name: Verify Elasticsearch is running
+      #- name: Verify Elasticsearch is running
+      #uri:
+      #url: "http://localhost:9200"
+      #return_content: yes
+      #register: es_status
+
+
+- name: Generate elastic bootstrap password
+  command: /usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic --batch --force
+  register: reset_output
+  changed_when: true
+
+- name: Extract generated elastic password
+  set_fact:
+    bootstrap_elastic_password: "{{ reset_output.stdout | regex_search('New value:\\s*(\\S+)', '\\1') | first }}"
+
+- name: Print extracted elastic password
+  debug:
+    msg: "The extracted elastic password is: {{ bootstrap_elastic_password }}"
+
+- name: Set elastic user password to a fixed value
+  uri:
+    url: "http://localhost:9200/_security/user/elastic/_password"
+    method: POST
+    user: elastic
+    password: "{{ bootstrap_elastic_password }}"
+    body_format: json
+    body:
+      password: "{{ elastic_user_password }}"
+    headers:
+      Content-Type: "application/json"
+  when: elastic_user_password is defined
+
+
+- name: Verify Elasticsearch is running with authentication
   uri:
     url: "http://localhost:9200"
     return_content: yes
+    force_basic_auth: yes
+    user: "elastic"
+    password: "{{ elastic_user_password }}"
   register: es_status
 
 - name: Debug Elasticsearch status

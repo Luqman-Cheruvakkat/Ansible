@@ -12,9 +12,9 @@
   set_fact:
     nexus_auth_header: "Basic {{ (nexus_username + ':' + nexus_password) | b64encode }}"
 
-- name: Convert build_list to a list (if it's a string)
-  set_fact:
-    build_list: "{{ build_list.split(',') }}"  # Split string into list
+      #- name: Convert build_list to a list (if it's a string)
+      # set_fact:
+      # build_list: "{{ build_list.split(',') }}"  # Split string into list
 
 - name: Filter artifacts based on build_list
   set_fact:
@@ -29,30 +29,35 @@
     - /opt/microservices
     - /opt/tomcat/webapps
 
-      #- name: Download selected artifacts
-      #get_url:
-      #url: "{{ nexus_base_url }}/{{ item.path }}/{{ item.name }}.{{ item.extension }}"
-      #dest: >-
-      #{% if item.extension == 'jar' %}
-      #  /opt/microservices/{{ item.name }}.{{ item.extension }}
-      #{% elif item.extension == 'war' %}
-      #  /opt/tomcat/webapps/{{ item.name }}.{{ item.extension }}
-      #{% else %}
-      #  /opt/microservices/{{ item.name }}.{{ item.extension }}
-      #{% endif %}
-      #headers:
-      #Authorization: "{{ nexus_auth_header }}"
-      #mode: '0755'
-      #force: yes
-      #loop: "{{ artifact_list }}"
 - name: Download selected artifacts
   get_url:
     url: "{{ nexus_base_url }}/{{ item.path }}/{{ item.name }}.{{ item.extension }}"
-    dest: >-
-      /opt/{{ 'microservices' if item.extension == 'jar' else 'tomcat/webapps' }}/{{ item.name }}.{{ item.extension }}
+    dest: "/tmp/{{ item.name }}.{{ item.extension }}"
     headers:
       Authorization: "{{ nexus_auth_header }}"
     mode: '0755'
     force: yes
   loop: "{{ artifact_list }}"
+
+- name: Ensure unzip is installed
+  package:
+    name: unzip
+    state: present
+
+
+- name: Handle downloaded artifacts
+  block:
+    - name: Move JAR or WAR to target location
+      command: >
+        mv /tmp/{{ item.name }}.{{ item.extension }} /opt/{{ 'microservices' if item.extension == 'jar' else 'tomcat/webapps' }}/{{ item.name }}.{{ item.extension }}
+      when: item.extension in ['jar', 'war']
+      loop: "{{ artifact_list }}"
+
+    - name: Unzip frontend artifact
+      unarchive:
+        src: "/tmp/{{ item.name }}.zip"
+        dest: "/opt/tomcat/webapps/"
+        remote_src: yes
+      when: item.extension == 'zip'
+      loop: "{{ artifact_list }}"
 

@@ -5,9 +5,7 @@
   loop: "{{ services }}"
   notify: Reload systemd
 
-- name: Enable and start services
-  systemd:
-    name: "{{ item.name }}"
-    enabled: yes
-    state: started
-  loop: "{{ services }}"
+- name: Reload systemd manually
+  command: systemctl daemon-reload
+  become: yes
+

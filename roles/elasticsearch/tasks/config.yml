@@ -1,23 +1,12 @@
 ---
-- name: Configure Elasticsearch network settings
-  blockinfile:
-    path: /etc/elasticsearch/elasticsearch.yml
-    marker: "# {mark} ANSIBLE MANAGED BLOCK"
-    block: |
-      network.host: 0.0.0.0
-      http.cors.enabled: true
-      http.cors.allow-origin: "*"
-      http.cors.allow-methods: OPTIONS, HEAD, GET, POST, PUT, DELETE
-      http.cors.allow-headers: X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization
-      http.cors.allow-credentials: true
-      http.port: 9200
 
-- name: Set xpack.security.enabled to false
-  lineinfile:
-    path: /etc/elasticsearch/elasticsearch.yml
-    regexp: '^xpack.security.enabled:'
-    line: 'xpack.security.enabled: false'
-    state: present
+- name: Replace elasticsearch.yml with templated version
+  template:
+    src: templates/elasticsearch.yml.j2
+    dest: /etc/elasticsearch/elasticsearch.yml
+    owner: root
+    group: elasticsearch
+    mode: '06460'
 
 - name: Configure Elasticsearch JVM heap size
   lineinfile:

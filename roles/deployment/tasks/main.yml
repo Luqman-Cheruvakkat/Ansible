@@ -1,0 +1,68 @@
+---
+
+- name: Load services_to_deploy from file
+  include_vars:
+    file: services_to_deploy.yml
+
+- name: Create temporary directory for extraction
+  tempfile:
+    state: directory
+    suffix: extract_dir
+  register: temp_dir
+  become: true
+
+- name: Extract fibi-config-server.jar directly
+  command: jar -xf /opt/microservices/fibi-config-server.jar
+  args:
+    chdir: "{{ temp_dir.path }}"
+  become: true
+
+- name: Copy extracted property files to /opt/tomcat/config/
+  copy:
+    src: "{{ temp_dir.path }}/BOOT-INF/classes/config/"
+    dest: /opt/tomcat/config/
+    owner: tomcat
+    group: tomcat
+    mode: '0644'
+    remote_src: yes
+  become: true
+
+- name: Remove the temporary extraction directory
+  file:
+    path: "{{ temp_dir.path }}"
+    state: absent
+  become: true
+
+- name: Recursively change owner and group of /opt/tomcat to tomcat:tomcat
+  file:
+    path: /opt/tomcat
+    owner: tomcat
+    group: tomcat
+    recurse: yes
+  become: true
+
+- name: Update server.port in fibi-base.property
+  lineinfile:
+    path: /opt/tomcat/config/fibi-base.properties
+    regexp: '^server\.port='
+    line: 'server.port=8080'
+    backrefs: yes
+
+- name: Start and enable services in order
+  systemd:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  become: true
+  loop: "{{ services_to_deploy }}"
+  loop_control:
+    loop_var: item
+  when: item is string
+
+- name: Removing bcprov dependency issue in fibi-base
+  shell: |
+    sleep 20
+    rm -f /opt/tomcat/webapps/fibi-base/WEB-INF/lib/bcprov-jdk15on-1.68.jar
+    systemctl restart tomcat
+  args:
+    executable: /bin/bash

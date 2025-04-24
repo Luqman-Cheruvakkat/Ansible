@@ -1,7 +1,11 @@
 [Unit]
 Description={{ item.name }} Daemon
-{% if item.after is defined %}After={{ item.after }}{% endif %}
-{% if item.requires is defined %}Requires={{ item.requires }}{% endif %}
+{% if item.after is defined %}
+After={{ item.after }}
+{% endif %}
+{% if item.requires is defined %}
+Requires={{ item.requires }}
+{% endif %}
 
 [Service]
 ExecStart=/bin/java -jar {{ item.jar_path }} --server.port={{ item.port }}

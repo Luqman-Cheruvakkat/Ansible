@@ -1,13 +1,15 @@
 ---
 # defaults file for download_artifacts
-artifact_list:
-  - name: fibi-api-gateway
-  - name: fibi-auth-service
-  - name: fibi-config-server
+#artifact_list:
+#  - name: fibi-api-gateway
+#  - name: fibi-auth-service
+#  - name: fibi-config-server
+#  - name: fibifrontend
+#  - name: 
 
-nexus_base_url: "http://103.121.26.82:2040/repository/releases/NTU/100"
-nexus_base_war_url: "http://103.121.26.82:2040/repository/releases/NTU/100/backend/fibi40"
-nexus_base_frontend_url: "http://103.121.26.82:2040/repository/releases/JHU/87/frontend/fibifrontend"
+nexus_base_url: "http://103.121.26.82:2040/repository/releases/NTU/115"
+nexus_base_war_url: "http://103.121.26.82:2040/repository/releases/NTU/115/backend/fibi40"
+nexus_base_frontend_url: "http://103.121.26.82:2040/repository/releases/JHU/115/frontend/fibifrontend"
 nexus_username: "admin"
 nexus_password: "Polus@#9746"
 

@@ -1,7 +1,7 @@
 ---
 - name: Ensure the JDK 17 is installed
   apt:
-    name: openjdk-17-jre-headless
+    name: openjdk-17-jdk-headless
     state: latest
   when: ansible_distribution == 'Ubuntu'
 

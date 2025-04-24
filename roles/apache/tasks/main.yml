@@ -19,10 +19,36 @@
   notify: Restart Apache
 
 - name: Enable SSL module
-  command: a2enmod ssl
+  command: a2enmod ssl proxy rewrite proxy_http2 proxy_http
+  notify: Restart Apache
+
+- name: Disable default configuration
+  command: a2dissite 000-default.conf
   notify: Restart Apache
 
 - name: Enable site configuration
   command: a2ensite {{ domain_name }}.conf
   notify: Restart Apache
 
+- name: Install Certbot
+  apt:
+    name:
+      - certbot
+      - python3-certbot-apache
+    state: latest
+    update_cache: yes
+
+- name: Obtain SSL certificates from Let's Encrypt
+  command: >
+    certbot --apache
+    -d {{ domain_name }}
+    --non-interactive --agree-tos
+    -m {{ ssl_email }}
+    --redirect
+  args:
+    creates: "/etc/letsencrypt/live/{{ domain_name }}/fullchain.pem"
+
+- name: Ensure Apache is reloaded after SSL
+  systemd:
+    name: apache2
+    state: reloaded

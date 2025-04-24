@@ -1,0 +1,10 @@
+---
+
+services_to_deploy:
+  - fibi-registry.service
+  - fibi-config.service
+  - fibi-api.service
+  - fibi-service-tracker.service
+  - fibi-agreement.service
+  - tomcat.service
+
