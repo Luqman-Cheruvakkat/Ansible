@@ -5,12 +5,16 @@
     enabled: yes
     state: restarted
 
-      #- name: Verify Elasticsearch is running
-      #uri:
-      #url: "http://localhost:9200"
-      #return_content: yes
-      #register: es_status
-
+- name: Wait for Elasticsearch to be available
+  uri:
+    url: "http://localhost:9200"
+    method: GET
+    status_code: 401
+    return_content: yes
+  register: es_status
+  retries: 10
+  delay: 5
+  until: es_status.status == 401
 
 - name: Generate elastic bootstrap password
   command: /usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic --batch --force

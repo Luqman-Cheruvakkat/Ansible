@@ -4,12 +4,15 @@
   become: yes
   roles:
     - elasticsearch
-    #- logstash
-    #- mysql
-    #- tomcat
-    #- mysql_script_exec
-    #- download_artifacts
-    #- jar-services
-    #- deployment
-    #- apache
+    - logstash
+    - mysql
+    - tomcat
+    - mysql_script_exec
+    - download_artifacts
+    - jar-services
+    - deployment
+    - apache
+    - rabbitmq
+    - redis-server
+    - node
 

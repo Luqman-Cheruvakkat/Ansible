@@ -69,6 +69,7 @@ http.cors.allow-methods: OPTIONS, HEAD, GET, POST, PUT, DELETE
 http.cors.allow-headers: X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization
 http.cors.allow-credentials: true
 http.port: 9200
+discovery.type: single-node
 ##############################################
 # --------------------------------- Discovery ----------------------------------
 #
@@ -114,7 +115,7 @@ xpack.security.transport.ssl:
   truststore.path: certs/transport.p12
 # Create a new cluster with the current node only
 # Additional nodes can still join the cluster later
-cluster.initial_master_nodes: ["127.0.0.1"]
+#cluster.initial_master_nodes: ["127.0.0.1"]
 
 # Allow HTTP API connections from anywhere
 # Connections are encrypted and require user authentication

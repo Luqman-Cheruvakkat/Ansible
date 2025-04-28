@@ -13,7 +13,7 @@
 
 - name: Run SQL script(s) on database
   shell: |
-    cd {{ git_dest }}
+    cd {{ work_path }}
     mysql -h {{ mysql_host }} -P {{ mysql_port }} -u {{ mysql_user }} -p'{{ mysql_password }}' {{ mysql_database }} < "{{ sql_script }}"
   args:
     executable: /bin/bash

@@ -1,0 +1,107 @@
+---
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Install gnupg and apt transport
+  apt:
+    name:
+      - gnupg
+      - apt-transport-https
+    state: present
+
+- name: Add RabbitMQ signing key
+  shell: |
+    wget -qO- "https://github.com/rabbitmq/signing-keys/releases/download/3.0/rabbitmq-release-signing-key.asc" \
+    | gpg --dearmor | tee /usr/share/keyrings/com.github.rabbitmq.signing.gpg > /dev/null
+  args:
+    creates: /usr/share/keyrings/com.github.rabbitmq.signing.gpg
+
+- name: Add Erlang signing key
+  shell: |
+    wget -qO- "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xf77f1eda57ebb1cc" \
+    | gpg --dearmor | tee /usr/share/keyrings/net.launchpad.ppa.rabbitmq.erlang.gpg > /dev/null
+  args:
+    creates: /usr/share/keyrings/net.launchpad.ppa.rabbitmq.erlang.gpg
+
+- name: Set permissions on keyrings
+  file:
+    path: "{{ item }}"
+    mode: '0644'
+  loop:
+    - /usr/share/keyrings/com.github.rabbitmq.signing.gpg
+    - /usr/share/keyrings/net.launchpad.ppa.rabbitmq.erlang.gpg
+
+- name: Add Erlang APT repository
+  copy:
+    dest: /etc/apt/sources.list.d/erlang.list
+    content: |
+      deb [arch=amd64 signed-by=/usr/share/keyrings/net.launchpad.ppa.rabbitmq.erlang.gpg] http://ppa.launchpad.net/rabbitmq/rabbitmq-erlang/ubuntu jammy main
+      deb-src [signed-by=/usr/share/keyrings/net.launchpad.ppa.rabbitmq.erlang.gpg] http://ppa.launchpad.net/rabbitmq/rabbitmq-erlang/ubuntu jammy main
+
+- name: Update apt cache again
+  apt:
+    update_cache: yes
+
+- name: Install Erlang packages
+  apt:
+    name:
+      - erlang-base
+      - erlang-asn1
+      - erlang-crypto
+      - erlang-eldap
+      - erlang-ftp
+      - erlang-inets
+      - erlang-mnesia
+      - erlang-os-mon
+      - erlang-parsetools
+      - erlang-public-key
+      - erlang-runtime-tools
+      - erlang-snmp
+      - erlang-ssl
+      - erlang-syntax-tools
+      - erlang-tftp
+      - erlang-tools
+      - erlang-xmerl
+    state: present
+
+- name: Download RabbitMQ server deb
+  get_url:
+    url: https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.12.13/rabbitmq-server_3.12.13-1_all.deb
+    dest: /opt/rabbitmq-server_3.12.13-1_all.deb
+
+- name: Install RabbitMQ
+  apt:
+    deb: /opt/rabbitmq-server_3.12.13-1_all.deb
+
+- name: Remove RabbitMQ .deb file
+  file:
+    path: /opt/rabbitmq-server_3.12.13-1_all.deb
+    state: absent
+
+- name: Enable RabbitMQ management plugin
+  command: rabbitmq-plugins enable rabbitmq_management
+
+- name: Start RabbitMQ service
+  service:
+    name: rabbitmq-server
+    state: started
+    enabled: yes
+
+- name: Add RabbitMQ admin user
+  command: rabbitmqctl add_user {{ rabbitmq_user }} {{ rabbitmq_password }}
+  register: add_user_output
+  failed_when: "'already_exists' not in add_user_output.stderr and add_user_output.rc != 0"
+  changed_when: "'already_exists' not in add_user_output.stderr"
+
+- name: Set user as administrator
+  command: rabbitmqctl set_user_tags {{ rabbitmq_user }} administrator
+
+- name: Set permissions for the user
+  command: rabbitmqctl set_permissions -p / {{ rabbitmq_user }} ".*" ".*" ".*"
+
+- name: Delete guest user
+  command: rabbitmqctl delete_user guest
+  ignore_errors: yes
+

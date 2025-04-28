@@ -8,9 +8,9 @@ mysql_dependencies:
   - libncurses5
   - libnuma1
   - libmecab2
-mysql_root_password: "Polus@123"
-mysql_db_name: "fibi"
-mysql_user: "fibiuser"
-mysql_user_password: "Polus@123"
+    #mysql_root_password: "Polus@123"
+    #mysql_db_name: "fibi"
+    #mysql_user: "fibiuser"
+    #mysql_user_password: "Polus@123"
 
 

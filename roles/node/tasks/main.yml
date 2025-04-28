@@ -1,0 +1,50 @@
+---
+
+- name: Update the system package list
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600  # Only updates if the cache is older than 1 hour
+
+- name: Download and install Node.js 16 repository signing key
+  shell: curl -fsSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
+  become: yes
+
+- name: Add Node.js 16 repository
+  # shell: sudo add-apt-repository "deb https://deb.nodesource.com/node_16.x $(lsb_release -sc) main" 
+  shell: sudo curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+  become: yes
+
+- name: Update the system package list again after adding Node.js repo
+  apt:
+    update_cache: yes
+
+- name: Install Node.js version 16
+  apt:
+    name: nodejs
+    state: present
+  become: yes
+
+- name: Install pm2 globally via npm
+  npm:
+    name: pm2
+    global: yes
+  become: yes
+
+- name: Verify nodejs installation version
+  command: node -v
+  register: node_version_output
+  changed_when: false
+
+- name: Verify npm installation version
+  command: npm -v
+  register: npm_version_output
+  changed_when: false
+
+- name: Display node.js version
+  debug:
+    msg: "Node.js version installed: {{ node_version_output.stdout }}"
+
+- name: Display npm version
+  debug:
+    msg: "npm version installed: {{ npm_version_output.stdout }}"
+

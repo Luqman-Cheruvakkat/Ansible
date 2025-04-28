@@ -1,0 +1,5 @@
+---
+
+redis_version: "6:7.0.9-1rl1~jammy1"
+  #redis_password: "polus123"
+
