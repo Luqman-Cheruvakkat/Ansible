@@ -2,9 +2,10 @@
 # defaults file for mysql_script_exec
 
 #git_repo: "https://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@github.com/Polus-Software/fibi40-db.git"
-git_branch: "Fibi-Dev/Demo/Jenkins"
+#git_branch: "Fibi-Dev/Demo/Jenkins"
+git_branch: "Fibi-Vanilla-5.5"
 git_dest: "/tmp/mysql-scripts/"
-work_path: "/tmp/mysql-scripts/"
+work_path: "/tmp/mysql-scripts/Fibi-5.4/"
 mysql_host: "localhost"
 mysql_user: "fibiuser"
 mysql_password: "Polus@123"
