@@ -1,7 +1,6 @@
 ---
 # defaults file for mysql_script_exec
 
-#git_repo: "https://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@github.com/Polus-Software/fibi40-db.git"
 #git_branch: "Fibi-Dev/Demo/Jenkins"
 git_branch: "Fibi-Vanilla-5.5"
 git_dest: "/tmp/mysql-scripts/"
