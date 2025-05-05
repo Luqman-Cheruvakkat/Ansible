@@ -1,7 +1,6 @@
 ---
 # defaults file for mysql_script_exec
 
-#git_branch: "Fibi-Dev/Demo/Jenkins"
 git_branch: "Fibi-Vanilla-5.5"
 git_dest: "/tmp/mysql-scripts/"
 work_path: "/tmp/mysql-scripts/Fibi-5.4/"
