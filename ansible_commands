@@ -6,3 +6,4 @@
    ansible all -m gather_facts
    ansible all -m apt -a update_cache=true
    ansible all -m apt -a name=vim-nox --become --ask-become-pass
+   ansible-vault edit group_vars/all/vault.yml
