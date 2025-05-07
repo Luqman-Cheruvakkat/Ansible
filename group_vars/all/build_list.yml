@@ -1,0 +1,13 @@
+---
+
+##download_artifacts
+
+build_list:
+  - fibi-api-gateway
+  - fibi-auth-service
+  - fibi-base
+  - fibi-config-server
+  - fibi-service-request
+  - fibi-service-registry
+  - fibi
+  - fibi-agreement

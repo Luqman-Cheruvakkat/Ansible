@@ -1,12 +1,12 @@
 ---
 
-- name: Load build_list from file
-  include_vars:
-    file: build_list.yml
+#- name: Load build_list from file
+#  include_vars:
+#    file: build_list.yml
 
-- name: Load all_artifacts from file
-  include_vars:
-    file: all_artifacts.yml
+#- name: Load all_artifacts from file
+#  include_vars:
+#    file: all_artifacts.yml
 
 - name: Set Nexus Authorization header
   set_fact:

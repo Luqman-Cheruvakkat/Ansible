@@ -1,8 +1,8 @@
 ---
 
-- name: Load services_to_deploy from file
-  include_vars:
-    file: services_to_deploy.yml
+#- name: Load services_to_deploy from file
+#  include_vars:
+#    file: services_to_deploy.yml
 
 - name: Create temporary directory for extraction
   tempfile:

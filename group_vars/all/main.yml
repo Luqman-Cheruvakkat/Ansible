@@ -1,0 +1,52 @@
+---
+##download_artifacts_Nexus_build_path
+nexus_base_url: "http://103.121.26.82:2040/repository/releases/NTU/115"
+nexus_base_war_url: "http://103.121.26.82:2040/repository/releases/NTU/115/backend/fibi40"
+nexus_base_frontend_url: "http://103.121.26.82:2040/repository/releases/JHU/115/frontend/fibifrontend"
+
+##Elasticsearch
+elastic_version: "8.7.0"
+es_heap_size: "2048m"
+xpack_security_enabled: false
+
+##Logstash
+logstash_version: "1:7.17.9-1"
+
+#Mysql
+mysql_version: "8.0.35-1ubuntu22.04_amd64.deb-bundle"
+mysql_download_url: "https://cdn.mysql.com/archives/mysql-8.0/mysql-server_{{ mysql_version }}.tar"
+mysql_install_dir: "/usr/local/mysql"
+mysql_data_dir: "/var/lib/mysql"
+mysql_dependencies:
+  - libaio1
+  - libncurses5
+  - libnuma1
+  - libmecab2
+
+##mysql_script_exec
+git_branch: "Fibi-Vanilla-5.5"
+git_dest: "/tmp/mysql-scripts/"
+work_path: "/tmp/mysql-scripts/Fibi-5.4/"
+mysql_host: "localhost"
+mysql_port: 3306
+mysql_database: "fibi"
+sql_script: "all.sql"
+
+##node
+node_version: "16.x"
+
+##Redis-server
+redis_version: "6:7.0.9-1rl1~jammy1"
+
+##Tomcat
+tomcat_version: "9.0.43"
+tomcat_user: "tomcat"
+tomcat_group: "tomcat"
+tomcat_home: "/opt/tomcat"
+tomcat_download_url: "https://archive.apache.org/dist/tomcat/tomcat-9/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz"
+catalina_opts: "-Xms32M -Xmx6144M -XX:MetaspaceSize=32m -XX:MaxMetaspaceSize=512m"
+
+##jar-services
+config_path: /opt/tomcat/config
+config_server_url: http://127.0.0.1:9302
+eureka_server_address: http://127.0.0.1:8763/eureka

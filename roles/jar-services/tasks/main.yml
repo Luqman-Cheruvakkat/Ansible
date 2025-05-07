@@ -1,3 +1,9 @@
+---
+
+#- name: Load services_to_deploy from file
+#  include_vars:
+#    file: jar_services.yml
+
 - name: Create systemd service files
   template:
     src: service.j2

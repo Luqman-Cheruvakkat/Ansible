@@ -14,7 +14,7 @@
 - name: Run SQL script(s) on database
   shell: |
     cd {{ work_path }}
-    mysql -h {{ mysql_host }} -P {{ mysql_port }} -u {{ mysql_user }} -p'{{ mysql_password }}' {{ mysql_database }} < "{{ sql_script }}"
+    mysql -h {{ mysql_host }} -P {{ mysql_port }} -u {{ mysql_user }} -p'{{ mysql_user_password }}' {{ mysql_database }} < "{{ sql_script }}"
   args:
     executable: /bin/bash
 

@@ -1,4 +1,6 @@
 ---
+##jar-services
+
 services:
   - name: fibi-auth
     port: 9902
