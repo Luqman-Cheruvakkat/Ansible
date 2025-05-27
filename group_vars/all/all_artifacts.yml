@@ -11,3 +11,10 @@ all_artifacts:
   - { name: "fibi", path: "frontend/fibifrontend", extension: "zip" }
   - { name: "fibi-service-registry", path: "backend/fibi40", extension: "jar" }
   - { name: "fibi-agreement", path: "backend/fibi40", extension: "jar" }
+  - { name: "fibi-form-builder", path: "backend/fibi40", extension: "jar" }
+  - { name: "fibi-graph-connect", path: "backend/fibi40", extension: "jar" }
+  - { name: "fibi-elasticsync", path: "backend/elasticsync", extension: "war" }
+  - { name: "fibi-rbmq-router", path: "backend/fibiqueue", extension: "jar" }
+  - { name: "fibi-consumer", path: "backend/fibiqueue", extension: "jar" }
+
+

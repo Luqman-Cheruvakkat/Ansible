@@ -20,4 +20,4 @@ build_list:
   - fibi-elasticsync
   - fibi-coi
   - fibi-rbmq-router
-  - fibi-elasticsync
+  - fibi-consumer
