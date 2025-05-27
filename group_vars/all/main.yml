@@ -1,8 +1,8 @@
 ---
 ##download_artifacts_Nexus_build_path
-nexus_base_url: "http://103.121.26.82:2040/repository/releases/NTU/115"
-nexus_base_war_url: "http://103.121.26.82:2040/repository/releases/NTU/115/backend/fibi40"
-nexus_base_frontend_url: "http://103.121.26.82:2040/repository/releases/JHU/115/frontend/fibifrontend"
+nexus_base_url: "http://103.121.26.82:2040/repository/releases/Local_QA/130"
+nexus_base_war_url: "http://103.121.26.82:2040/repository/releases/Local_QA/130/backend/fibi40"
+nexus_base_frontend_url: "http://103.121.26.82:2040/repository/releases/Local_QA/130/frontend/fibifrontend"
 
 ##Elasticsearch
 elastic_version: "8.7.0"
@@ -24,7 +24,7 @@ mysql_dependencies:
   - libmecab2
 
 ##mysql_script_exec
-git_branch: "Fibi-Vanilla-5.5"
+git_branch: "ASTAR-Dev"
 git_dest: "/tmp/mysql-scripts/"
 work_path: "/tmp/mysql-scripts/Fibi-5.4/"
 mysql_host: "localhost"
@@ -39,7 +39,7 @@ node_version: "16.x"
 redis_version: "6:7.0.9-1rl1~jammy1"
 
 ##Tomcat
-tomcat_version: "9.0.43"
+tomcat_version: "9.0.99"
 tomcat_user: "tomcat"
 tomcat_group: "tomcat"
 tomcat_home: "/opt/tomcat"
@@ -48,5 +48,5 @@ catalina_opts: "-Xms32M -Xmx6144M -XX:MetaspaceSize=32m -XX:MaxMetaspaceSize=512
 
 ##jar-services
 config_path: /opt/tomcat/config
-config_server_url: http://127.0.0.1:9302
-eureka_server_address: http://127.0.0.1:8763/eureka
+config_server_url: http://127.0.0.1:13003
+eureka_server_address: http://127.0.0.1:13000/eureka

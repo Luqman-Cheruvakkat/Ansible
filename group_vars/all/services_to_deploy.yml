@@ -7,4 +7,7 @@ services_to_deploy:
   - fibi-api-gateway.service
   - fibi-service-request.service
   - fibi-agreement.service
+  - fibi-rbmq-router.service
+  - fibi-consumer.service  
+  - fibi-form-builder.service  
   - tomcat.service
