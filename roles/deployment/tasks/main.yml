@@ -48,13 +48,27 @@
     line: 'server.port=8080'
     backrefs: yes
 
+- name: Filter services_to_deploy based on build_list (include tomcat always)
+  set_fact:
+    filtered_services_to_deploy: >-
+      {{
+        services_to_deploy
+        | selectattr("split('.')[0]", "in", build_list)
+        | list
+        + (
+            ['tomcat.service']
+            if 'tomcat.service' in services_to_deploy
+            else []
+          )
+      }}
+
 - name: Start and enable services in order
   systemd:
     name: "{{ item }}"
     state: started
     enabled: yes
   become: true
-  loop: "{{ services_to_deploy }}"
+  loop: "{{ filtered_services_to_deploy }}"
   loop_control:
     loop_var: item
   when: item is string

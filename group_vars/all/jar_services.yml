@@ -2,11 +2,11 @@
 ##jar-services
 
 services:
-  - name: fibi-auth
-    port: 9902
+  - name: fibi-auth-service
+    port: 13001
     jar_path: /opt/microservices/fibi-auth-service.jar
-    after: fibi-config.service
-    requires: fibi-config.service
+    after: fibi-config-server.service
+    requires: fibi-config-server.service
     environment:
       - key: DB_HOST
         value: "{{ db_host }}"
@@ -23,13 +23,13 @@ services:
       - key: EUREKA_SERVER_ADDRESS
         value: "{{ eureka_server_address }}"
 
-  - name: fibi-registry
-    port: 8763
+  - name: fibi-service-registry
+    port: 13000
     jar_path: /opt/microservices/fibi-service-registry.jar
     environment: []
 
-  - name: fibi-api
-    port: 9905
+  - name: fibi-api-gateway
+    port: 13002
     jar_path: /opt/microservices/fibi-api-gateway.jar
     after: fibi-auth.service
     requires: fibi-auth.service
@@ -39,20 +39,20 @@ services:
       - key: EUREKA_SERVER_ADDRESS
         value: "{{ eureka_server_address }}"
 
-  - name: fibi-config
-    port: 9302
+  - name: fibi-config-server
+    port: 13003
     jar_path: /opt/microservices/fibi-config-server.jar $CONFIG_PATH
-    after: fibi-registry.service
-    requires: fibi-registry.service
+    after: fibi-service-registry.service
+    requires: fibi-service-registry.service
     environment: 
       - key: CONFIG_PATH
         value: "{{ config_path }}"
 
-  - name: fibi-service-tracker
-    port: 9904
+  - name: fibi-service-request
+    port: 13004
     jar_path: /opt/microservices/fibi-service-request.jar
-    after: fibi-api.service
-    requires: fibi-api.service
+    after: fibi-api-gateway.service
+    requires: fibi-api-gateway.service
     environment:
       - key: DB_HOST
         value: "{{ db_host }}"
@@ -70,10 +70,10 @@ services:
         value: "{{ eureka_server_address }}"
 
   - name: fibi-consumer
-    port: 9906
+    port: 13005
     jar_path: /opt/microservices/fibi-consumer.jar
-    after: fibi-api.service
-    requires: fibi-api.service
+    after: fibi-api-gateway.service
+    requires: fibi-api-gateway.service
     environment:
       - key: DB_HOST
         value: "{{ db_host }}"
@@ -91,10 +91,160 @@ services:
         value: "{{ eureka_server_address }}"
 
   - name: fibi-agreement
-    port: 9907
+    port: 13006
     jar_path: /opt/microservices/fibi-agreement.jar
-    after: fibi-api.service
-    requires: fibi-api.service
+    after: fibi-api-gateway.service
+    requires: fibi-api-gateway.service
+    environment:
+      - key: DB_HOST
+        value: "{{ db_host }}"
+      - key: DB_PORT
+        value: "{{ db_port }}"
+      - key: DB_USER
+        value: "{{ db_user }}"
+      - key: DB_PWD
+        value: "{{ db_pwd }}"
+      - key: DB_NAME
+        value: "{{ db_name }}"
+      - key: CONFIG_SERVER_URL
+        value: "{{ config_server_url }}"
+      - key: EUREKA_SERVER_ADDRESS
+        value: "{{ eureka_server_address }}"
+
+
+  - name: fibi-coi-connect
+    port: 13007
+    jar_path: /opt/microservices/fibi-coi-connect.jar
+    after: fibi-api-gateway.service
+    requires: fibi-api-gateway.service
+    environment:
+      - key: DB_HOST
+        value: "{{ db_host }}"
+      - key: DB_PORT
+        value: "{{ db_port }}"
+      - key: DB_USER
+        value: "{{ db_user }}"
+      - key: DB_PWD
+        value: "{{ db_pwd }}"
+      - key: DB_NAME
+        value: "{{ db_name }}"
+      - key: CONFIG_SERVER_URL
+        value: "{{ config_server_url }}"
+      - key: EUREKA_SERVER_ADDRESS
+        value: "{{ eureka_server_address }}"
+
+  - name: fibi-form-builder
+    port: 13008
+    jar_path: /opt/microservices/fibi-form-builder.jar
+    after: fibi-api-gateway.service
+    requires: fibi-api-gateway.service
+    environment:
+      - key: DB_HOST
+        value: "{{ db_host }}"
+      - key: DB_PORT
+        value: "{{ db_port }}"
+      - key: DB_USER
+        value: "{{ db_user }}"
+      - key: DB_PWD
+        value: "{{ db_pwd }}"
+      - key: DB_NAME
+        value: "{{ db_name }}"
+      - key: CONFIG_SERVER_URL
+        value: "{{ config_server_url }}"
+      - key: EUREKA_SERVER_ADDRESS
+        value: "{{ eureka_server_address }}"
+
+
+  - name: fibi-notification-service
+    port: 13009
+    jar_path: /opt/microservices/fibi-notification-service.jar
+    after: fibi-api-gateway.service
+    requires: fibi-api-gateway.service
+    environment:
+      - key: DB_HOST
+        value: "{{ db_host }}"
+      - key: DB_PORT
+        value: "{{ db_port }}"
+      - key: DB_USER
+        value: "{{ db_user }}"
+      - key: DB_PWD
+        value: "{{ db_pwd }}"
+      - key: DB_NAME
+        value: "{{ db_name }}"
+      - key: CONFIG_SERVER_URL
+        value: "{{ config_server_url }}"
+      - key: EUREKA_SERVER_ADDRESS
+        value: "{{ eureka_server_address }}"
+
+
+  - name: fibi-docusign
+    port: 13010
+    jar_path: /opt/microservices/fibi-docusign.jar
+    after: fibi-api-gateway.service
+    requires: fibi-api-gateway.service
+    environment:
+      - key: DB_HOST
+        value: "{{ db_host }}"
+      - key: DB_PORT
+        value: "{{ db_port }}"
+      - key: DB_USER
+        value: "{{ db_user }}"
+      - key: DB_PWD
+        value: "{{ db_pwd }}"
+      - key: DB_NAME
+        value: "{{ db_name }}"
+      - key: CONFIG_SERVER_URL
+        value: "{{ config_server_url }}"
+      - key: EUREKA_SERVER_ADDRESS
+        value: "{{ eureka_server_address }}"
+
+  - name: fibi-attachement-pdf-merger
+    port: 13011
+    jar_path: /opt/microservices/fibi-attachment-pdf-merger.jar
+    after: fibi-api-gateway.service
+    requires: fibi-api-gateway.service
+    environment:
+      - key: DB_HOST
+        value: "{{ db_host }}"
+      - key: DB_PORT
+        value: "{{ db_port }}"
+      - key: DB_USER
+        value: "{{ db_user }}"
+      - key: DB_PWD
+        value: "{{ db_pwd }}"
+      - key: DB_NAME
+        value: "{{ db_name }}"
+      - key: CONFIG_SERVER_URL
+        value: "{{ config_server_url }}"
+      - key: EUREKA_SERVER_ADDRESS
+        value: "{{ eureka_server_address }}"
+
+  - name: fibi-coi
+    port: 13012
+    jar_path: /opt/microservices/fcoi.jar
+    after: fibi-api-gateway.service
+    requires: fibi-api-gateway.service
+    environment:
+      - key: DB_HOST
+        value: "{{ db_host }}"
+      - key: DB_PORT
+        value: "{{ db_port }}"
+      - key: DB_USER
+        value: "{{ db_user }}"
+      - key: DB_PWD
+        value: "{{ db_pwd }}"
+      - key: DB_NAME
+        value: "{{ db_name }}"
+      - key: CONFIG_SERVER_URL
+        value: "{{ config_server_url }}"
+      - key: EUREKA_SERVER_ADDRESS
+        value: "{{ eureka_server_address }}"
+
+  - name: fibi-rbmq-router
+    port: 13013
+    jar_path: /opt/microservices/fibi-rbmq-router-module.jar
+    after: fibi-api-gateway.service
+    requires: fibi-api-gateway.service
     environment:
       - key: DB_HOST
         value: "{{ db_host }}"

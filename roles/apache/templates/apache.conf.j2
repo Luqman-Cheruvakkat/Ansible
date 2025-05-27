@@ -16,14 +16,14 @@
     ProxyPass /fibi http://127.0.0.1:8080/fibi
     ProxyPassReverse /fibi http://127.0.0.1:8080/fibi
 
-    ProxyPass /auth http://127.0.0.1:9905/auth
-    ProxyPassReverse /auth http://127.0.0.1:9905/auth
+    ProxyPass /auth http://127.0.0.1:13001/auth
+    ProxyPassReverse /auth http://127.0.0.1:13001/auth
 
-    ProxyPass /eureka http://127.0.0.1:8763
-    ProxyPassReverse /eureka http://127.0.0.1:8763
+    ProxyPass /eureka http://127.0.0.1:13000
+    ProxyPassReverse /eureka http://127.0.0.1:13000
 
-    ProxyPass / http://127.0.0.1:9905/
-    ProxyPassReverse / http://127.0.0.1:9905/
+    ProxyPass / http://127.0.0.1:13002/
+    ProxyPassReverse / http://127.0.0.1:13002/
 
 </VirtualHost>
 

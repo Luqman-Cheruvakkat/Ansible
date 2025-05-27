@@ -1,14 +1,14 @@
 ---
 
-#- name: Load services_to_deploy from file
-#  include_vars:
-#    file: jar_services.yml
+- name: Filter services to deploy based on build_list
+  set_fact:
+    filtered_services: "{{ services | selectattr('name', 'in', build_list) | list }}"
 
 - name: Create systemd service files
   template:
     src: service.j2
     dest: "/etc/systemd/system/{{ item.name }}.service"
-  loop: "{{ services }}"
+  loop: "{{ filtered_services }}"
   notify: Reload systemd
 
 - name: Reload systemd manually

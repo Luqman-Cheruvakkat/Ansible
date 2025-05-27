@@ -11,3 +11,13 @@ build_list:
   - fibi-service-registry
   - fibi
   - fibi-agreement
+  - fibi-coi-connect
+  - fibi-form-builder
+  - fibi-notification-service
+  - fibi-graph-connect
+  - fibi-docusign
+  - fibi-attachement-pdf-merger
+  - fibi-elasticsync
+  - fibi-coi
+  - fibi-rbmq-router
+  - fibi-elasticsync
