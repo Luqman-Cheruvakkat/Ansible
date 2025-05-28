@@ -1,7 +1,7 @@
 ---
 
 services_to_deploy:
-  - fibi-server-registry.service
+  - fibi-service-registry.service
   - fibi-config-server.service
   - fibi-auth-service.service
   - fibi-api-gateway.service

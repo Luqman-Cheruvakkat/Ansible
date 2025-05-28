@@ -31,8 +31,8 @@ services:
   - name: fibi-api-gateway
     port: 13002
     jar_path: /opt/microservices/fibi-api-gateway.jar
-    after: fibi-auth.service
-    requires: fibi-auth.service
+    after: fibi-auth-service.service
+    requires: fibi-auth-service.service
     environment:
       - key: CONFIG_SERVER_URL
         value: "{{ config_server_url }}"
