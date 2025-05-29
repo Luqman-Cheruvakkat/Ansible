@@ -48,13 +48,32 @@
     line: 'server.port=8080'
     backrefs: yes
 
-- name: Filter services_to_deploy based on build_list (include tomcat always)
+      #- name: Filter services_to_deploy based on build_list (include tomcat always)
+      #set_fact:
+      #filtered_services_to_deploy: >-
+      #{{
+      #  services_to_deploy
+      #  | selectattr("split('.')[0]", "in", build_list)
+      #  | list
+      #  + (
+      #      ['tomcat.service']
+      #      if 'tomcat.service' in services_to_deploy
+      #      else []
+      #    )
+      #}}
+- name: Extract service names without .service
+  set_fact:
+    service_names: "{{ services_to_deploy | map('regex_replace', '\\.service$', '') | list }}"
+
+- name: Filter matching service names
+  set_fact:
+    filtered_names: "{{ service_names | select('in', build_list) | list }}"
+
+- name: Rebuild filtered .service list
   set_fact:
     filtered_services_to_deploy: >-
       {{
-        services_to_deploy
-        | selectattr("split('.')[0]", "in", build_list)
-        | list
+        filtered_names | map('regex_replace', '$', '.service') | list
         + (
             ['tomcat.service']
             if 'tomcat.service' in services_to_deploy
