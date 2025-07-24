@@ -1,10 +1,10 @@
 ---
-- name: Install Apache2 package
-  apt:
-    name: apache2
-    state: latest
-    update_cache: yes
-  when: ansible_distribution == 'Ubuntu'
+#- name: Install Apache2 package
+#  apt:
+#    name: apache2
+#    state: latest
+#    update_cache: yes
+#  when: ansible_distribution == 'Ubuntu'
 
 - name: Ensure Apache is enabled and started
   systemd:
@@ -30,13 +30,13 @@
   command: a2ensite {{ domain_name }}.conf
   notify: Restart Apache
 
-- name: Install Certbot
-  apt:
-    name:
-      - certbot
-      - python3-certbot-apache
-    state: latest
-    update_cache: yes
+#- name: Install Certbot
+#  apt:
+#    name:
+#      - certbot
+#      - python3-certbot-apache
+#    state: latest
+#    update_cache: yes
 
 - name: Obtain SSL certificates from Let's Encrypt
   command: >

@@ -260,3 +260,24 @@ services:
         value: "{{ config_server_url }}"
       - key: EUREKA_SERVER_ADDRESS
         value: "{{ eureka_server_address }}"
+
+  - name: fibi-rbmq-router
+    port: 13014
+    jar_path: /opt/microservices/fibi-graph-connect.jar
+    after: fibi-api-gateway.service
+    requires: fibi-api-gateway.service
+    environment:
+      - key: DB_HOST
+        value: "{{ db_host }}"
+      - key: DB_PORT
+        value: "{{ db_port }}"
+      - key: DB_USER
+        value: "{{ db_user }}"
+      - key: DB_PWD
+        value: "{{ db_pwd }}"
+      - key: DB_NAME
+        value: "{{ db_name }}"
+      - key: CONFIG_SERVER_URL
+        value: "{{ config_server_url }}"
+      - key: EUREKA_SERVER_ADDRESS
+        value: "{{ eureka_server_address }}"

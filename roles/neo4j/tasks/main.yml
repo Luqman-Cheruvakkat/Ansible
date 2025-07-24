@@ -1,0 +1,50 @@
+---
+- name: Add Neo4j GPG key
+  ansible.builtin.shell: |
+    curl -fsSL https://debian.neo4j.com/neotechnology.gpg.key | gpg --dearmor -o /usr/share/keyrings/neo4j-archive-keyring.gpg
+  args:
+    creates: /usr/share/keyrings/neo4j-archive-keyring.gpg
+  become: true
+
+- name: Add Neo4j APT repository
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/usr/share/keyrings/neo4j-archive-keyring.gpg] https://debian.neo4j.com stable 5"
+    filename: neo4j
+  become: true
+
+- name: Update APT cache
+  ansible.builtin.apt:
+    update_cache: yes
+  become: true
+
+- name: Install Neo4j version 5.11.0
+  ansible.builtin.apt:
+    name: "neo4j=1:5.11.0"
+    state: present
+  become: true
+
+- name: Deploy neo4j.conf
+  ansible.builtin.template:
+    src: neo4j.conf.j2
+    dest: /etc/neo4j/neo4j.conf
+    owner: neo4j
+    group: neo4j
+    mode: '0644'
+  notify:
+    - Restart Neo4j
+  become: true
+
+- name: Start and enable Neo4j
+  ansible.builtin.systemd:
+    name: neo4j
+    enabled: yes
+    state: started
+  become: true
+
+- name: Change Neo4j default password if still default
+  shell: |
+    echo "ALTER CURRENT USER SET PASSWORD FROM '{{ neo4j_default_password }}' TO '{{ neo4j_new_password }}';" | \
+    cypher-shell -u neo4j -p "$NEO4J_PASS" --database system
+  environment:
+    NEO4J_PASS: "{{ neo4j_default_password }}"
+

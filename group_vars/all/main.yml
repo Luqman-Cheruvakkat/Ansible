@@ -50,3 +50,11 @@ catalina_opts: "-Xms32M -Xmx6144M -XX:MetaspaceSize=32m -XX:MaxMetaspaceSize=512
 config_path: /opt/tomcat/config
 config_server_url: http://127.0.0.1:13003
 eureka_server_address: http://127.0.0.1:13000/eureka
+
+
+##Neo4j
+server_heap_initial_size: 2g
+server_heap_max_size: 2g
+server_page_cache_size: 3g
+tx_log_retention_policy: 1 days
+

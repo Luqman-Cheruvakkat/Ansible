@@ -1,13 +1,26 @@
 ---
-- name: Add Elastic GPG key for Logstash
-  apt_key:
-    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
-    state: present
+#- name: Add Elastic GPG key for Logstash
+#  apt_key:
+#    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+#    state: present
 
-- name: Add Elastic repository for Logstash
-  apt_repository:
-    repo: "deb https://artifacts.elastic.co/packages/7.x/apt stable main"
-    state: present
+#- name: Add Elastic repository for Logstash
+#  apt_repository:
+#    repo: "deb https://artifacts.elastic.co/packages/7.x/apt stable main"
+#    state: present
+
+- name: Download Elasticsearch GPG key and save as binary keyring
+  ansible.builtin.shell: >
+    wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch |
+    gpg --dearmor -o /usr/share/keyrings/elastic-7.x-keyring.gpg
+  args:
+    creates: /usr/share/keyrings/elastic-7.x-keyring.gpg
+
+- name: Add Elasticsearch APT repository 7.x
+  ansible.builtin.copy:
+    dest: /etc/apt/sources.list.d/elastic-7.x.list
+    content: "deb [signed-by=/usr/share/keyrings/elastic-7.x-keyring.gpg] https://artifacts.elastic.co/packages/7.x/apt stable main\n"
+    mode: '0644'
 
 - name: Update apt cache
   apt:
