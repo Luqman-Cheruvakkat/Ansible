@@ -12,8 +12,8 @@
     #- jar-services
     #- deployment
     #- apache
-       #- rabbitmq
-      #- redis-server
-      #- node
+    #- rabbitmq
+    #- redis-server
+    #- node
     - neo4j
 
