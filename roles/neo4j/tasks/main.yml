@@ -41,6 +41,15 @@
     state: started
   become: true
 
+- name: Wait for Neo4j to become available on port 7687
+  ansible.builtin.wait_for:
+    host: "127.0.0.1"
+    port: 7687
+    delay: 5
+    timeout: 60
+    state: started
+  become: false
+
 - name: Change Neo4j default password if still default
   shell: |
     echo "ALTER CURRENT USER SET PASSWORD FROM '{{ neo4j_default_password }}' TO '{{ neo4j_new_password }}';" | \
